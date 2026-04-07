@@ -416,20 +416,20 @@ body {
   text-shadow: 0 0 48px var(--hq-accent-dim), 0 0 1px rgba(240, 242, 247, 0.8);
 }
 
-/* BAKER-NET: explicit solid fill for Chrome — no inherited h1 color, no glow, no alpha tricks */
-.hq-header .hq-header__title .hq-header__baker-net {
+/* BAKER-NET: max specificity + !important; JS also sets inline !important for Chrome/prod */
+header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__baker-net {
   font-family: var(--hq-mono);
   font-size: 0.58em;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   vertical-align: baseline;
-  color: #a5d8ff;
-  -webkit-text-fill-color: #a5d8ff;
-  opacity: 1;
-  text-shadow: none;
-  filter: none;
-  mix-blend-mode: normal;
+  color: #a5d8ff !important;
+  -webkit-text-fill-color: #a5d8ff !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  filter: none !important;
+  mix-blend-mode: normal !important;
 }
 
 .hq-header__tagline {
@@ -2281,4 +2281,10 @@ body {
   border-left: 2px solid rgba(165, 216, 255, 0.35);
   background: rgba(165, 216, 255, 0.04);
   border-radius: 0 var(--hq-radius-sm) var(--hq-radius-sm) 0;
+}
+
+/* End-of-sheet repeat: wins cascade if anything above targeted spans/h1 generically */
+header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__baker-net {
+  color: #a5d8ff !important;
+  -webkit-text-fill-color: #a5d8ff !important;
 }

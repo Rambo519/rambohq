@@ -1,4 +1,17 @@
+import { useLayoutEffect, useRef } from 'react'
+
+const BAKER_NET_HEX = '#a5d8ff'
+
 export function DashboardHeader() {
+  const bakerNetRef = useRef(null)
+
+  useLayoutEffect(() => {
+    const el = bakerNetRef.current
+    if (!el) return
+    el.style.setProperty('color', BAKER_NET_HEX, 'important')
+    el.style.setProperty('-webkit-text-fill-color', BAKER_NET_HEX, 'important')
+  }, [])
+
   return (
     <header className="hq-header">
       <div className="hq-header__hud" aria-hidden="true">
@@ -46,7 +59,9 @@ export function DashboardHeader() {
         </div>
         <h1 className="hq-header__title">
           <span className="hq-header__title-main">Rambo//HQ</span>{' '}
-          <span className="hq-header__baker-net">[BAKER-NET]</span>
+          <span ref={bakerNetRef} className="hq-header__baker-net">
+            [BAKER-NET]
+          </span>
         </h1>
         <p className="hq-header__tagline">
           <span className="hq-header__subtitle">Personal Command Center</span>
