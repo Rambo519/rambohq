@@ -5,7 +5,7 @@ import { SunTimesPanel } from './components/SunTimesPanel'
 import { MarketWatchPanel } from './components/MarketWatchPanel'
 import { SportsTickerPanel } from './components/SportsTickerPanel'
 import { SkyConditionsPanel } from './components/SkyConditionsPanel'
-import { LiveDataRefreshDebug } from './components/LiveDataRefreshDebug'
+import { LiveRefreshPanel } from './components/LiveRefreshPanel'
 import { DashboardLiveProvider } from './context/DashboardLiveProvider'
 
 function App() {
@@ -17,6 +17,7 @@ function App() {
         <main className="hq-main">
           <div className="hq-grid">
             <ForecastRow />
+            <LiveRefreshPanel />
             <SkyConditionsPanel />
             <SunTimesPanel />
             <MarketWatchPanel />
@@ -25,7 +26,6 @@ function App() {
           </div>
         </main>
       </div>
-      <LiveDataRefreshDebug />
     </DashboardLiveProvider>
   )
 }

@@ -13,8 +13,8 @@ export function SkyConditionsPanel() {
   const { status, data, errorMessage } = observatory
 
   return (
-    <DashboardCard title="Observatory" icon={<IconTelescope className="hq-ico" />} spanClass="hq-span-12" className="hq-card--sky">
-      <div className="hq-sky">
+    <DashboardCard title="Observatory" icon={<IconTelescope className="hq-ico" />} spanClass="hq-span-9" className="hq-card--sky">
+      <div className="hq-sky hq-sky--compact">
         {status === 'loading' && (
           <p className="hq-weather__state" role="status">
             Loading sky data…
