@@ -5,6 +5,7 @@ import { SunTimesPanel } from './components/SunTimesPanel'
 import { MarketWatchPanel } from './components/MarketWatchPanel'
 import { SportsTickerPanel } from './components/SportsTickerPanel'
 import { SkyConditionsPanel } from './components/SkyConditionsPanel'
+import { LiveDataRefreshDebug } from './components/LiveDataRefreshDebug'
 import { DashboardLiveProvider } from './context/DashboardLiveProvider'
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           </div>
         </main>
       </div>
+      {import.meta.env.DEV ? <LiveDataRefreshDebug /> : null}
     </DashboardLiveProvider>
   )
 }

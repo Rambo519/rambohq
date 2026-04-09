@@ -2532,6 +2532,53 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
   border-radius: 0 var(--hq-radius-sm) var(--hq-radius-sm) 0;
 }
 
+/* DEV-only: LiveDataRefreshDebug (stripped in production by component guard) */
+.hq-refresh-debug {
+  position: fixed;
+  z-index: 9999;
+  right: 0.35rem;
+  bottom: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.06rem;
+  padding: 0.28rem 0.4rem;
+  max-width: min(14rem, calc(100vw - 0.7rem));
+  font-family: var(--hq-mono);
+  font-size: 0.58rem;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  color: rgba(180, 188, 204, 0.72);
+  background: rgba(8, 10, 14, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hq-refresh-debug__label {
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(120, 132, 152, 0.85);
+  margin-bottom: 0.08rem;
+}
+
+.hq-refresh-debug__row {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hq-refresh-debug__row strong {
+  display: inline-block;
+  min-width: 2.15rem;
+  font-weight: 600;
+  color: rgba(150, 162, 180, 0.9);
+}
+
 /* End-of-sheet repeat: wins cascade if anything above targeted spans/h1 generically */
 header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__baker-net {
   color: #a5d8ff !important;

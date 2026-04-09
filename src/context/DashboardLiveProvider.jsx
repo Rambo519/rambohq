@@ -77,6 +77,14 @@ export function DashboardLiveProvider({ children }) {
     errorMessage: '',
   })
 
+  /** DEV/debug: epoch ms of last successful refresh per source (null = never yet). */
+  const [liveRefreshAt, setLiveRefreshAt] = useState({
+    weatherPath: /** @type {number | null} */ (null),
+    astronomy: /** @type {number | null} */ (null),
+    market: /** @type {number | null} */ (null),
+    sports: /** @type {number | null} */ (null),
+  })
+
   const generationRef = useRef(0)
   const moonRef = useRef(/** @type {{ at: number, moon: ReturnType<typeof computeMoonStateFromSunCalc> | null }} */ ({
     at: 0,
@@ -167,9 +175,11 @@ export function DashboardLiveProvider({ children }) {
     }
 
     let moon = moonRef.current.moon
+    let moonFreshlyComputed = false
     if (!moon) {
       moon = computeMoonStateFromSunCalc(latitude, longitude, new Date())
       moonRef.current = { at: Date.now(), moon }
+      moonFreshlyComputed = true
     }
 
     setObservatory((prev) => {
@@ -191,6 +201,15 @@ export function DashboardLiveProvider({ children }) {
         errorMessage: '',
       }
     })
+
+    setLiveRefreshAt((d) => {
+      const n = Date.now()
+      return {
+        ...d,
+        weatherPath: n,
+        ...(moonFreshlyComputed ? { astronomy: n } : {}),
+      }
+    })
   }
 
   function runAstronomyRefresh() {
@@ -202,8 +221,10 @@ export function DashboardLiveProvider({ children }) {
 
     const { geocodedPlace, source } = locationMetaRef.current
 
+    let astronomyApplied = false
     setObservatory((prev) => {
       if (!prev.data) return prev
+      astronomyApplied = true
       const wx = {
         cloudCoverPct: prev.data.cloudCoverPct,
         visibilityLabel: prev.data.visibilityLabel,
@@ -214,6 +235,9 @@ export function DashboardLiveProvider({ children }) {
         data: assembleObservatorySkyRecord(wx, moon, geocodedPlace, source),
       }
     })
+    if (astronomyApplied) {
+      setLiveRefreshAt((d) => ({ ...d, astronomy: Date.now() }))
+    }
   }
 
   async function runMarkets(silent) {
@@ -227,6 +251,7 @@ export function DashboardLiveProvider({ children }) {
     }
     try {
       const out = await fetchMarkets()
+      let marketSuccess = false
       setMarket((prev) => {
         if (out.allFailed) {
           if (silent && prev.status === 'ready') return prev
@@ -239,8 +264,12 @@ export function DashboardLiveProvider({ children }) {
         if (out.partial) {
           console.error('[Market watch] Partial quotes: some instruments did not load')
         }
+        marketSuccess = true
         return { status: 'ready', rows: out.rows, errorMessage: '' }
       })
+      if (marketSuccess) {
+        setLiveRefreshAt((d) => ({ ...d, market: Date.now() }))
+      }
     } catch (e) {
       console.error('[Market watch] Unexpected failure:', e)
       setMarket((prev) => {
@@ -261,6 +290,7 @@ export function DashboardLiveProvider({ children }) {
     try {
       const data = await fetchSportsTickerData()
       setSports({ status: 'ready', rows: data, errorMessage: '' })
+      setLiveRefreshAt((d) => ({ ...d, sports: Date.now() }))
     } catch (e) {
       setSports((prev) => {
         if (silent && prev.status === 'ready') return prev
@@ -325,8 +355,9 @@ export function DashboardLiveProvider({ children }) {
       observatory,
       market,
       sports,
+      liveRefreshAt,
     }),
-    [forecast, solar, observatory, market, sports]
+    [forecast, solar, observatory, market, sports, liveRefreshAt]
   )
 
   return <DashboardLiveContext.Provider value={value}>{children}</DashboardLiveContext.Provider>
