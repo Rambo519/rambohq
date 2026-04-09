@@ -730,6 +730,28 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
   flex-direction: column;
   justify-content: center;
   min-height: 5.65rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hq-card--forecast.hq-card--today-wx .hq-card__body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--hq-radius-sm);
+  pointer-events: none;
+  z-index: 0;
+  background-image: radial-gradient(1px 1px at 10% 20%, rgba(255, 255, 255, 0.35), transparent),
+    radial-gradient(1px 1px at 30% 65%, rgba(255, 255, 255, 0.2), transparent),
+    radial-gradient(1px 1px at 72% 30%, rgba(255, 255, 255, 0.28), transparent),
+    radial-gradient(1px 1px at 88% 75%, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 55% 50%, rgba(255, 255, 255, 0.15), transparent);
+  opacity: 0.42;
+}
+
+.hq-card--forecast.hq-card--today-wx .hq-todaywx {
+  position: relative;
+  z-index: 1;
 }
 
 .hq-todaywx {
@@ -744,7 +766,7 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
 .hq-todaywx__state {
   margin: 0;
   font-size: 0.82rem;
-  color: #92aea3;
+  color: #92a3b8;
 }
 
 .hq-todaywx__state--err {
@@ -777,7 +799,7 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
   font-size: 0.72rem;
   font-weight: 500;
   line-height: 1.24;
-  color: #9db8ae;
+  color: #9aa8bc;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -805,7 +827,7 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
 .hq-todaywx__tlabel {
   font-weight: 700;
   text-transform: uppercase;
-  color: #5f7a6e;
+  color: #6b7a94;
   line-height: 1;
 }
 
@@ -818,9 +840,9 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
   font-family: var(--hq-mono);
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: #f7fcfa;
+  color: #f4f8fc;
   font-variant-numeric: tabular-nums;
-  text-shadow: 0 0 28px rgba(46, 230, 166, 0.12);
+  text-shadow: 0 0 28px rgba(147, 197, 255, 0.14);
 }
 
 .hq-todaywx__temp--hero {
@@ -836,7 +858,7 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
   font-weight: 600;
   letter-spacing: 0.025em;
   line-height: 1.32;
-  color: #9db8ae;
+  color: #9aa8bc;
 }
 
 .hq-todaywx__hilow-bit {
@@ -845,7 +867,7 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
 
 .hq-todaywx__hilow-num {
   font-weight: 700;
-  color: #e8f5ef;
+  color: #e8eef5;
 }
 
 .hq-todaywx__hilow-sep {
@@ -881,8 +903,8 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
 .hq-todaywx__glyph {
   width: 2.45rem;
   height: 2.45rem;
-  color: #7af5d4;
-  filter: drop-shadow(0 0 14px rgba(46, 230, 166, 0.5)) drop-shadow(0 0 32px rgba(46, 230, 166, 0.18));
+  color: #8ec5ff;
+  filter: drop-shadow(0 0 14px rgba(147, 197, 255, 0.45)) drop-shadow(0 0 32px rgba(165, 216, 255, 0.2));
 }
 
 .hq-todaywx__dl {
@@ -911,7 +933,7 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
   font-weight: 600;
   letter-spacing: 0.065em;
   text-transform: uppercase;
-  color: #6f9082;
+  color: #6b85a0;
   line-height: 1.18;
   padding-top: 0.1em;
 }
@@ -923,7 +945,7 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
   font-weight: 700;
   line-height: 1.24;
   letter-spacing: 0.012em;
-  color: #f7fcfa;
+  color: #f4f8fc;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -950,6 +972,33 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
   border-color: rgba(46, 230, 166, 0.26);
   box-shadow: var(--hq-shadow), 0 0 0 1px rgba(46, 230, 166, 0.12), 0 0 36px rgba(46, 230, 166, 0.07),
     inset 0 1px 0 rgba(255, 255, 255, 0.055), inset 0 -1px 0 rgba(46, 230, 166, 0.08);
+}
+
+/* Today’s weather only — Observatory-style shell (blue night glass); Forecast row stays green */
+.hq-card--forecast.hq-card--today-wx {
+  background: linear-gradient(152deg, #141c28 0%, #0e141f 45%, #0a1018 100%);
+  border-color: rgba(165, 216, 255, 0.2);
+  box-shadow: var(--hq-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 -1px 0 rgba(165, 216, 255, 0.08);
+}
+
+.hq-card--forecast.hq-card--today-wx:hover {
+  border-color: rgba(165, 216, 255, 0.32);
+  box-shadow: var(--hq-shadow), 0 0 0 1px rgba(147, 197, 255, 0.12), 0 0 40px rgba(147, 197, 255, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -1px 0 rgba(165, 216, 255, 0.1);
+}
+
+.hq-card--forecast.hq-card--today-wx .hq-card__title {
+  color: rgba(200, 218, 240, 0.92);
+}
+
+.hq-card--forecast.hq-card--today-wx .hq-card__icon {
+  color: #8ec5ff;
+  filter: drop-shadow(0 0 10px rgba(147, 197, 255, 0.35));
+}
+
+.hq-card--forecast.hq-card--today-wx .hq-card__body {
+  color: #c9d4e0;
 }
 
 .hq-card--forecast .hq-card__head {
