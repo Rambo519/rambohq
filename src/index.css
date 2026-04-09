@@ -611,8 +611,14 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
 .hq-span-4 {
   grid-column: span 4;
 }
+.hq-span-5 {
+  grid-column: span 5;
+}
 .hq-span-6 {
   grid-column: span 6;
+}
+.hq-span-7 {
+  grid-column: span 7;
 }
 .hq-span-8 {
   grid-column: span 8;
@@ -623,7 +629,9 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
 
 @media (max-width: 1024px) {
   .hq-span-4,
+  .hq-span-5,
   .hq-span-6,
+  .hq-span-7,
   .hq-span-8 {
     grid-column: span 12;
   }
@@ -704,39 +712,231 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
   margin-top: 0.5rem;
 }
 
-/* Clock — compact vertical footprint */
-.hq-card--clock {
-  padding: 0.85rem 1.15rem 0.75rem;
-}
-
-.hq-card--clock .hq-card__head {
-  margin-bottom: 0.4rem;
-}
-
-.hq-clock {
+/* Today's weather — flex column so body fills card vertically */
+.hq-card--forecast.hq-card--today-wx {
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  padding: 0.85rem 1.15rem 0.8rem;
 }
 
-.hq-clock__time {
-  font-family: var(--hq-mono);
-  font-size: clamp(1.55rem, 3.5vw, 2.05rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.05;
-  color: var(--hq-heading);
-  font-variant-numeric: tabular-nums;
+.hq-card--forecast.hq-card--today-wx .hq-card__head {
+  margin-bottom: 0.42rem;
+  flex-shrink: 0;
 }
 
-.hq-clock__date {
+.hq-card--forecast.hq-card--today-wx .hq-card__body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 5.65rem;
+}
+
+.hq-todaywx {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  min-height: 100%;
+}
+
+.hq-todaywx__state {
   margin: 0;
-  font-size: 0.86rem;
-  line-height: 1.25;
-  color: var(--hq-text-muted);
+  font-size: 0.82rem;
+  color: #92aea3;
 }
 
-/* Weather — horizontal meta + 5-day row on desktop */
+.hq-todaywx__state--err {
+  color: #fecaca;
+}
+
+/* Horizontal: temp block | stats stack | icon — stretch to fill body height */
+.hq-todaywx__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(6.15rem, 1fr) min-content;
+  gap: 0.45rem 0.55rem;
+  align-items: stretch;
+  min-width: 0;
+  flex: 1;
+  min-height: 100%;
+}
+
+.hq-todaywx__lead {
+  display: flex;
+  flex-direction: column;
+  gap: 0.26rem;
+  justify-content: flex-start;
+  align-items: stretch;
+  min-width: 0;
+  min-height: 100%;
+}
+
+.hq-todaywx__meta {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.24;
+  color: #9db8ae;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+
+/* Stacked: hero Now temp, then compact High / Low line */
+.hq-todaywx__stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: 0.06rem;
+}
+
+.hq-todaywx__nowblock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.05rem;
+}
+
+.hq-todaywx__tlabel {
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #5f7a6e;
+  line-height: 1;
+}
+
+.hq-todaywx__tlabel--now {
+  font-size: 0.44rem;
+  letter-spacing: 0.14em;
+}
+
+.hq-todaywx__temp {
+  font-family: var(--hq-mono);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #f7fcfa;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 28px rgba(46, 230, 166, 0.12);
+}
+
+.hq-todaywx__temp--hero {
+  font-size: clamp(2.35rem, 5.85vw, 3.28rem);
+  line-height: 0.82;
+}
+
+.hq-todaywx__hilow {
+  margin: 0;
+  padding: 0;
+  font-family: var(--hq-mono);
+  font-size: clamp(0.6rem, 1.55vw, 0.7rem);
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  line-height: 1.32;
+  color: #9db8ae;
+}
+
+.hq-todaywx__hilow-bit {
+  white-space: nowrap;
+}
+
+.hq-todaywx__hilow-num {
+  font-weight: 700;
+  color: #e8f5ef;
+}
+
+.hq-todaywx__hilow-sep {
+  margin: 0 0.3rem;
+  opacity: 0.4;
+  font-weight: 500;
+}
+
+/* Solar arc panel yellow (.hq-sun__time) — high/low line only on Today’s weather card */
+.hq-card--forecast.hq-card--today-wx .hq-todaywx__hilow {
+  color: rgba(253, 230, 138, 0.9);
+}
+
+.hq-card--forecast.hq-card--today-wx .hq-todaywx__hilow-num {
+  color: #fde68a;
+  text-shadow: 0 0 20px rgba(251, 191, 36, 0.28), 0 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.hq-card--forecast.hq-card--today-wx .hq-todaywx__hilow-sep {
+  color: rgba(253, 230, 138, 0.35);
+  opacity: 1;
+}
+
+.hq-todaywx__iconcell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0.15rem 0 0.15rem 0.2rem;
+  align-self: stretch;
+}
+
+.hq-todaywx__glyph {
+  width: 2.45rem;
+  height: 2.45rem;
+  color: #7af5d4;
+  filter: drop-shadow(0 0 14px rgba(46, 230, 166, 0.5)) drop-shadow(0 0 32px rgba(46, 230, 166, 0.18));
+}
+
+.hq-todaywx__dl {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  align-self: stretch;
+  min-width: 0;
+  min-height: 100%;
+  padding: 0.12rem 0 0.1rem;
+  gap: 0.24rem;
+}
+
+.hq-todaywx__row {
+  display: grid;
+  grid-template-columns: 3.35rem minmax(0, 1fr);
+  gap: 0.3rem 0.42rem;
+  align-items: start;
+}
+
+.hq-todaywx__row dt {
+  margin: 0;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.065em;
+  text-transform: uppercase;
+  color: #6f9082;
+  line-height: 1.18;
+  padding-top: 0.1em;
+}
+
+.hq-todaywx__row dd {
+  margin: 0;
+  font-family: var(--hq-mono);
+  font-size: clamp(0.74rem, 2vw, 0.86rem);
+  font-weight: 700;
+  line-height: 1.24;
+  letter-spacing: 0.012em;
+  color: #f7fcfa;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hq-todaywx__row--cond dd {
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* Weather — tighter meta column + 5-day row on desktop */
 .hq-card--forecast {
   padding: 0.95rem 1.15rem 0.85rem;
   /* Dark green glass panel — hue from --hq-accent (#2ee6a6), very low chroma */
@@ -771,8 +971,8 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
 
 .hq-weather {
   display: grid;
-  grid-template-columns: minmax(10.5rem, 14rem) minmax(0, 1fr);
-  gap: 0.5rem 1.1rem;
+  grid-template-columns: minmax(6.75rem, 9.25rem) minmax(0, 1fr);
+  gap: 0.4rem 0.5rem;
   align-items: center;
 }
 
@@ -795,7 +995,7 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
 }
 
 .hq-weather__city {
-  margin: 0.15rem 0 0;
+  margin: 0.08rem 0 0;
   font-size: 0.78rem;
   font-weight: 500;
   color: var(--hq-text-muted);
@@ -803,7 +1003,7 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
 }
 
 .hq-weather__source {
-  margin: 0.12rem 0 0;
+  margin: 0.06rem 0 0;
   font-family: var(--hq-mono);
   font-size: 0.6rem;
   font-weight: 500;

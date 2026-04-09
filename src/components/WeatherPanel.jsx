@@ -1,107 +1,24 @@
-import { useState, useEffect, useMemo } from 'react'
 import { DashboardCard } from './DashboardCard'
-import {
-  IconCloud,
-  IconSun,
-  IconRain,
-  IconMainlyClear,
-  IconPartlyCloudy,
-  IconFog,
-  IconDrizzle,
-  IconSnow,
-  IconThunder,
-} from './Icons'
-import { fetchOpenMeteoForecast } from '../utils/openMeteoForecast'
-import { resolveAppLocation } from '../utils/resolveAppLocation'
-import { reverseGeocodePlaceLabel } from '../utils/reverseGeocode'
-import { getCoordSourceDebugLine, getLocationSubtitle } from '../utils/locationDisplay'
+import { IconCloud } from './Icons'
+import { WeatherGlyph } from './WeatherGlyph'
 
 const LOCATION_LABEL = 'Local Forecast'
 
-function WeatherGlyph({ icon }) {
-  const c = { className: 'hq-weather__glyph' }
-  switch (icon) {
-    case 'clear':
-      return <IconSun {...c} />
-    case 'mainly_clear':
-      return <IconMainlyClear {...c} />
-    case 'partly':
-      return <IconPartlyCloudy {...c} />
-    case 'fog':
-      return <IconFog {...c} />
-    case 'drizzle':
-      return <IconDrizzle {...c} />
-    case 'rain':
-      return <IconRain {...c} />
-    case 'snow':
-      return <IconSnow {...c} />
-    case 'thunder':
-      return <IconThunder {...c} />
-    case 'cloud':
-    default:
-      return <IconCloud {...c} />
-  }
-}
-
-export function WeatherPanel() {
-  const [status, setStatus] = useState('loading')
-  const [days, setDays] = useState([])
-  const [errorMessage, setErrorMessage] = useState('')
-  const [coordSource, setCoordSource] = useState(/** @type {'browser' | 'fallback' | null} */ (null))
-  const [geocodedPlace, setGeocodedPlace] = useState(/** @type {string | null} */ (null))
-
-  const locationSubtitle = useMemo(
-    () => (status === 'ready' ? getLocationSubtitle(geocodedPlace, coordSource) : null),
-    [status, geocodedPlace, coordSource]
-  )
-
-  const sourceDebug = useMemo(
-    () => (status === 'ready' ? getCoordSourceDebugLine(coordSource) : null),
-    [status, coordSource]
-  )
-
-  useEffect(() => {
-    let cancelled = false
-
-    async function load() {
-      setStatus('loading')
-      setErrorMessage('')
-      setCoordSource(null)
-      setGeocodedPlace(null)
-      try {
-        const { latitude, longitude, source } = await resolveAppLocation()
-        const [{ days: nextDays }, place] = await Promise.all([
-          fetchOpenMeteoForecast(latitude, longitude),
-          reverseGeocodePlaceLabel(latitude, longitude),
-        ])
-        if (!cancelled) {
-          setDays(nextDays)
-          setCoordSource(source)
-          setGeocodedPlace(place)
-          setStatus('ready')
-        }
-      } catch (e) {
-        if (!cancelled) {
-          setErrorMessage(e instanceof Error ? e.message : 'Forecast unavailable')
-          setDays([])
-          setCoordSource(null)
-          setGeocodedPlace(null)
-          setStatus('error')
-        }
-      }
-    }
-
-    load()
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
+/**
+ * @param {{
+ *   status: 'loading' | 'ready' | 'error',
+ *   days: Array<{ dateISO: string, dayLabel: string, highF: number, lowF: number, icon: string, summary: string }>,
+ *   locationSubtitle: string | null,
+ *   sourceDebug: string | null,
+ *   errorMessage: string,
+ * }} props
+ */
+export function WeatherPanel({ status, days, locationSubtitle, sourceDebug, errorMessage }) {
   return (
     <DashboardCard
       title="Forecast"
       icon={<IconCloud className="hq-ico" />}
-      spanClass="hq-span-8"
+      spanClass="hq-span-7"
       className="hq-card--forecast"
     >
       <div className="hq-weather">

@@ -1,6 +1,5 @@
 import { DashboardHeader } from './components/DashboardHeader'
-import { ClockCard } from './components/ClockCard'
-import { WeatherPanel } from './components/WeatherPanel'
+import { ForecastRow } from './components/ForecastRow'
 import { SystemStatusPanel } from './components/SystemStatusPanel'
 import { SunTimesPanel } from './components/SunTimesPanel'
 import { MarketWatchPanel } from './components/MarketWatchPanel'
@@ -14,8 +13,7 @@ function App() {
       <DashboardHeader />
       <main className="hq-main">
         <div className="hq-grid">
-          <ClockCard />
-          <WeatherPanel />
+          <ForecastRow />
           <SkyConditionsPanel />
           <SunTimesPanel />
           <MarketWatchPanel />
