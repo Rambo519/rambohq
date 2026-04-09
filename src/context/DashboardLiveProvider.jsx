@@ -27,6 +27,25 @@ function rejectionMessage(r) {
   return r.reason instanceof Error ? r.reason.message : 'Request failed'
 }
 
+/**
+ * US market-hours gate for scheduled (silent) market refreshes only.
+ * Uses America/New_York wall-clock hour (not the browser's local timezone).
+ * Allowed: 9:00–16:59 ET inclusive; 17:00 ET and later same day: not allowed.
+ * @param {Date} [date]
+ */
+function isWithinMarketRefreshWindow(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/New_York',
+    hour: 'numeric',
+    hour12: false,
+  }).formatToParts(date)
+  const raw = parts.find((p) => p.type === 'hour')?.value
+  const h = raw != null ? Number.parseInt(raw, 10) : NaN
+  if (!Number.isFinite(h)) return false
+  const hour = h === 24 ? 0 : h
+  return hour >= 9 && hour < 17
+}
+
 function usePageVisible() {
   const [visible, setVisible] = useState(
     () => typeof document === 'undefined' || !document.hidden
@@ -311,6 +330,7 @@ export function DashboardLiveProvider({ children }) {
       runAstronomyRefresh()
     }
     tickRef.current.marketSilent = () => {
+      if (!isWithinMarketRefreshWindow()) return
       void runMarkets(true)
     }
     tickRef.current.sportsSilent = () => {
