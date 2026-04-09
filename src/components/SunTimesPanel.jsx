@@ -1,71 +1,33 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { DashboardCard } from './DashboardCard'
 import { IconSunrise } from './Icons'
-import { resolveAppLocation } from '../utils/resolveAppLocation'
-import { reverseGeocodePlaceLabel } from '../utils/reverseGeocode'
-import { fetchSolarArcData } from '../utils/fetchSolarArc'
 import { formatTimeLocal } from '../utils/formatTimeLocal'
 import { getCoordSourceDebugLine, getLocationSubtitle } from '../utils/locationDisplay'
+import { useDashboardLive } from '../hooks/useDashboardLive'
 
 export function SunTimesPanel() {
-  const [status, setStatus] = useState('loading')
-  const [errorMessage, setErrorMessage] = useState('')
-  const [coordSource, setCoordSource] = useState(/** @type {'browser' | 'fallback' | null} */ (null))
-  const [geocodedPlace, setGeocodedPlace] = useState(/** @type {string | null} */ (null))
-  const [solar, setSolar] = useState(/** @type {Awaited<ReturnType<typeof fetchSolarArcData>> | null} */ (null))
+  const { forecast, solar } = useDashboardLive()
+  const { status: fcStatus, coordSource, geocodedPlace } = forecast
+  const { status: solStatus, data: solarData, errorMessage: solError } = solar
 
-  const locationSubtitle = useMemo(
-    () => (status === 'ready' ? getLocationSubtitle(geocodedPlace, coordSource) : null),
-    [status, geocodedPlace, coordSource]
-  )
+  const locationSubtitle = useMemo(() => {
+    if (fcStatus === 'loading') return null
+    return getLocationSubtitle(geocodedPlace, coordSource)
+  }, [fcStatus, geocodedPlace, coordSource])
 
-  const sourceDebug = useMemo(
-    () => (status === 'ready' ? getCoordSourceDebugLine(coordSource) : null),
-    [status, coordSource]
-  )
+  const sourceDebug = useMemo(() => {
+    if (fcStatus === 'loading') return null
+    return getCoordSourceDebugLine(coordSource)
+  }, [fcStatus, coordSource])
 
-  const sunriseLabel = solar ? formatTimeLocal(solar.sunriseIso) : null
-  const sunsetLabel = solar ? formatTimeLocal(solar.sunsetIso) : null
+  const sunriseLabel = solarData ? formatTimeLocal(solarData.sunriseIso) : null
+  const sunsetLabel = solarData ? formatTimeLocal(solarData.sunsetIso) : null
 
-  const civilDuskLabel = solar?.civilDusk ? formatTimeLocal(solar.civilDusk) : null
+  const civilDuskLabel = solarData?.civilDusk ? formatTimeLocal(solarData.civilDusk) : null
 
-  useEffect(() => {
-    let cancelled = false
-
-    async function load() {
-      setStatus('loading')
-      setErrorMessage('')
-      setCoordSource(null)
-      setGeocodedPlace(null)
-      setSolar(null)
-      try {
-        const { latitude, longitude, source } = await resolveAppLocation()
-        const [arc, place] = await Promise.all([
-          fetchSolarArcData(latitude, longitude),
-          reverseGeocodePlaceLabel(latitude, longitude),
-        ])
-        if (!cancelled) {
-          setSolar(arc)
-          setCoordSource(source)
-          setGeocodedPlace(place)
-          setStatus('ready')
-        }
-      } catch (e) {
-        if (!cancelled) {
-          setErrorMessage(e instanceof Error ? e.message : 'Solar data unavailable')
-          setSolar(null)
-          setCoordSource(null)
-          setGeocodedPlace(null)
-          setStatus('error')
-        }
-      }
-    }
-
-    load()
-    return () => {
-      cancelled = true
-    }
-  }, [])
+  const loading = fcStatus === 'loading' || solStatus === 'loading'
+  const solarFailed = solStatus === 'error' && !solarData
+  const showSolarReady = solStatus === 'ready' && solarData && sunriseLabel && sunsetLabel
 
   return (
     <DashboardCard
@@ -80,21 +42,21 @@ export function SunTimesPanel() {
           {sourceDebug && <p className="hq-sun__source">{sourceDebug}</p>}
         </div>
 
-        {status === 'loading' && (
+        {loading && (
           <p className="hq-sun__state" role="status">
             Loading solar data…
           </p>
         )}
 
-        {status === 'error' && (
+        {!loading && solarFailed && (
           <p className="hq-sun__state hq-sun__state--err" role="alert">
-            {errorMessage}
+            {solError || 'Solar data unavailable'}
           </p>
         )}
 
-        {status === 'ready' && solar && sunriseLabel && sunsetLabel && (
+        {!loading && showSolarReady && (
           <>
-            <p className="hq-sun__date">{solar.dateISO}</p>
+            <p className="hq-sun__date">{solarData.dateISO}</p>
             <div className="hq-sun__hero">
               <div className="hq-sun__pillar">
                 <span className="hq-sun__label">Sunrise</span>
@@ -115,7 +77,7 @@ export function SunTimesPanel() {
               )}
               <div className="hq-sun__cell">
                 <dt>Day length</dt>
-                <dd>{solar.dayLengthFormatted}</dd>
+                <dd>{solarData.dayLengthFormatted}</dd>
               </div>
             </dl>
           </>

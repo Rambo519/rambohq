@@ -15,9 +15,13 @@ export function SystemStatusPanel() {
   const [mem, setMem] = useState(56)
   const [latency, setLatency] = useState(17)
   const [network, setNetwork] = useState(/** @type {'STABLE' | 'ACTIVE'} */ ('STABLE'))
-  const t0 = useRef(typeof performance !== 'undefined' ? performance.now() : 0)
+  const t0 = useRef(0)
   const cpuRef = useRef(38)
   const latRef = useRef(17)
+
+  useEffect(() => {
+    t0.current = typeof performance !== 'undefined' ? performance.now() : 0
+  }, [])
 
   useEffect(() => {
     const id = window.setInterval(() => {

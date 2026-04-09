@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react'
 import { DashboardCard } from './DashboardCard'
 import { IconStadium } from './Icons'
-import { fetchSportsTickerData } from '../utils/fetchSportsTicker'
+import { useDashboardLive } from '../hooks/useDashboardLive'
 
 const ACCENT = {
   guardians: '#e31937',
@@ -17,36 +16,8 @@ function StateBadge({ state }) {
 }
 
 export function SportsTickerPanel() {
-  const [status, setStatus] = useState('loading')
-  const [rows, setRows] = useState([])
-  const [errorMessage, setErrorMessage] = useState('')
-
-  useEffect(() => {
-    let cancelled = false
-
-    async function load() {
-      setStatus('loading')
-      setErrorMessage('')
-      try {
-        const data = await fetchSportsTickerData()
-        if (!cancelled) {
-          setRows(data)
-          setStatus('ready')
-        }
-      } catch (e) {
-        if (!cancelled) {
-          setErrorMessage(e instanceof Error ? e.message : 'Ticker unavailable')
-          setRows([])
-          setStatus('error')
-        }
-      }
-    }
-
-    load()
-    return () => {
-      cancelled = true
-    }
-  }, [])
+  const { sports } = useDashboardLive()
+  const { status, rows, errorMessage } = sports
 
   return (
     <DashboardCard
@@ -72,66 +43,66 @@ export function SportsTickerPanel() {
           {rows.map((g) => {
             const isTeamRow = g.rowKind === 'team'
             return (
-            <li
-              key={g.id}
-              className={isTeamRow ? 'hq-cle__row hq-cle__row--4col' : 'hq-cle__row'}
-              style={{ '--cle-accent': ACCENT[g.id] }}
-            >
-              <div className="hq-cle__team">
-                <span
-                  className={
-                    g.rowKind === 'ufc'
-                      ? 'hq-cle__name hq-cle__name--mma'
-                      : 'hq-cle__name'
-                  }
-                >
-                  {g.teamName}
-                </span>
-                <span className={g.rowKind === 'ufc' ? 'hq-cle__league hq-cle__league--ufc' : 'hq-cle__league'}>
-                  {g.league}
-                </span>
-              </div>
-              <div className="hq-cle__mid hq-cle__mid--ticker">
-                <span className="hq-cle__matchup">{g.matchupLine}</span>
-                <span className="hq-cle__venue">{g.venueLine}</span>
-              </div>
-              {isTeamRow ? (
-                <>
-                  <div className="hq-cle__score hq-cle__score--ticker hq-cle__score--teamcol">
-                    <StateBadge state={g.state} />
-                    {g.scoreLine ? (
-                      <span className="hq-cle__nums">{g.scoreLine}</span>
-                    ) : (
-                      <span className="hq-cle__nums hq-cle__nums--muted">—</span>
-                    )}
-                  </div>
-                  <div className="hq-cle__next">
-                    <span
-                      className={
-                        g.nextMatchupLine
-                          ? 'hq-cle__next-match'
-                          : 'hq-cle__next-match hq-cle__next-match--placeholder'
-                      }
-                    >
-                      {g.nextMatchupLine ?? '—'}
-                    </span>
-                    <span
-                      className={
-                        g.nextTimeLine
-                          ? 'hq-cle__next-when'
-                          : 'hq-cle__next-when hq-cle__next-when--placeholder'
-                      }
-                    >
-                      {g.nextTimeLine ?? '—'}
-                    </span>
-                  </div>
-                </>
-              ) : (
-                <div className="hq-cle__score hq-cle__score--ticker">
-                  <span className="hq-cle__eventdate">{g.dateDisplay || '—'}</span>
+              <li
+                key={g.id}
+                className={isTeamRow ? 'hq-cle__row hq-cle__row--4col' : 'hq-cle__row'}
+                style={{ '--cle-accent': ACCENT[g.id] }}
+              >
+                <div className="hq-cle__team">
+                  <span
+                    className={
+                      g.rowKind === 'ufc'
+                        ? 'hq-cle__name hq-cle__name--mma'
+                        : 'hq-cle__name'
+                    }
+                  >
+                    {g.teamName}
+                  </span>
+                  <span className={g.rowKind === 'ufc' ? 'hq-cle__league hq-cle__league--ufc' : 'hq-cle__league'}>
+                    {g.league}
+                  </span>
                 </div>
-              )}
-            </li>
+                <div className="hq-cle__mid hq-cle__mid--ticker">
+                  <span className="hq-cle__matchup">{g.matchupLine}</span>
+                  <span className="hq-cle__venue">{g.venueLine}</span>
+                </div>
+                {isTeamRow ? (
+                  <>
+                    <div className="hq-cle__score hq-cle__score--ticker hq-cle__score--teamcol">
+                      <StateBadge state={g.state} />
+                      {g.scoreLine ? (
+                        <span className="hq-cle__nums">{g.scoreLine}</span>
+                      ) : (
+                        <span className="hq-cle__nums hq-cle__nums--muted">—</span>
+                      )}
+                    </div>
+                    <div className="hq-cle__next">
+                      <span
+                        className={
+                          g.nextMatchupLine
+                            ? 'hq-cle__next-match'
+                            : 'hq-cle__next-match hq-cle__next-match--placeholder'
+                        }
+                      >
+                        {g.nextMatchupLine ?? '—'}
+                      </span>
+                      <span
+                        className={
+                          g.nextTimeLine
+                            ? 'hq-cle__next-when'
+                            : 'hq-cle__next-when hq-cle__next-when--placeholder'
+                        }
+                      >
+                        {g.nextTimeLine ?? '—'}
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="hq-cle__score hq-cle__score--ticker">
+                    <span className="hq-cle__eventdate">{g.dateDisplay || '—'}</span>
+                  </div>
+                )}
+              </li>
             )
           })}
         </ul>

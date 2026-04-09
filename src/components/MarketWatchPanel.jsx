@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react'
 import { DashboardCard } from './DashboardCard'
 import { IconChartLine } from './Icons'
 import { formatMarketPrice } from '../utils/formatMarket'
-import { createMarketRowSkeletons, fetchMarkets } from '../utils/fetchMarkets'
+import { useDashboardLive } from '../hooks/useDashboardLive'
 
 function Trend({ direction, changePct, loading }) {
   if (loading) {
@@ -68,44 +67,8 @@ function MarketColumn({ rows, side, loading }) {
 }
 
 export function MarketWatchPanel() {
-  const [status, setStatus] = useState('loading')
-  const [rows, setRows] = useState(() => createMarketRowSkeletons())
-  const [errorMessage, setErrorMessage] = useState('')
-
-  useEffect(() => {
-    let cancelled = false
-
-    async function load() {
-      setStatus('loading')
-      setErrorMessage('')
-      setRows(createMarketRowSkeletons())
-      try {
-        const out = await fetchMarkets()
-        if (cancelled) return
-        setRows(out.rows)
-        if (out.allFailed) {
-          setErrorMessage(out.errorMessage || 'Quotes unavailable')
-          setStatus('error')
-        } else {
-          setStatus('ready')
-          if (out.partial) {
-            console.error('[Market watch] Partial quotes: some instruments did not load')
-          }
-        }
-      } catch (e) {
-        if (cancelled) return
-        console.error('[Market watch] Unexpected failure:', e)
-        setRows(createMarketRowSkeletons())
-        setErrorMessage(e instanceof Error ? e.message : 'Quotes unavailable')
-        setStatus('error')
-      }
-    }
-
-    load()
-    return () => {
-      cancelled = true
-    }
-  }, [])
+  const { market } = useDashboardLive()
+  const { status, rows, errorMessage } = market
 
   const leftRows = rows.slice(0, 3)
   const rightRows = rows.slice(3)

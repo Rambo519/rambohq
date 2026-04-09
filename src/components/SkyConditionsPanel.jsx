@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react'
 import { DashboardCard } from './DashboardCard'
 import { IconTelescope } from './Icons'
 import { MoonDisc } from './MoonDisc'
-import { fetchObservatorySkyData } from '../utils/fetchObservatorySky'
+import { useDashboardLive } from '../hooks/useDashboardLive'
 
 function metricValue(label) {
   if (label == null || label === '') return '—'
@@ -10,37 +9,8 @@ function metricValue(label) {
 }
 
 export function SkyConditionsPanel() {
-  const [status, setStatus] = useState('loading')
-  const [data, setData] = useState(/** @type {Awaited<ReturnType<typeof fetchObservatorySkyData>> | null} */ (null))
-  const [errorMessage, setErrorMessage] = useState('')
-
-  useEffect(() => {
-    let cancelled = false
-
-    async function load() {
-      setStatus('loading')
-      setErrorMessage('')
-      setData(null)
-      try {
-        const next = await fetchObservatorySkyData()
-        if (!cancelled) {
-          setData(next)
-          setStatus('ready')
-        }
-      } catch (e) {
-        if (!cancelled) {
-          setErrorMessage(e instanceof Error ? e.message : 'Observatory data unavailable')
-          setData(null)
-          setStatus('error')
-        }
-      }
-    }
-
-    load()
-    return () => {
-      cancelled = true
-    }
-  }, [])
+  const { observatory } = useDashboardLive()
+  const { status, data, errorMessage } = observatory
 
   return (
     <DashboardCard title="Observatory" icon={<IconTelescope className="hq-ico" />} spanClass="hq-span-12" className="hq-card--sky">

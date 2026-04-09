@@ -1,18 +1,12 @@
-import { useState, useEffect, useMemo } from 'react'
-import { fetchOpenMeteoForecast } from '../utils/openMeteoForecast'
-import { resolveAppLocation } from '../utils/resolveAppLocation'
-import { reverseGeocodePlaceLabel } from '../utils/reverseGeocode'
+import { useMemo } from 'react'
 import { getCoordSourceDebugLine, getLocationSubtitle } from '../utils/locationDisplay'
+import { useDashboardLive } from '../hooks/useDashboardLive'
 import { TodayWeatherCard } from './TodayWeatherCard'
 import { WeatherPanel } from './WeatherPanel'
 
 export function ForecastRow() {
-  const [status, setStatus] = useState('loading')
-  const [days, setDays] = useState([])
-  const [snapshot, setSnapshot] = useState(null)
-  const [errorMessage, setErrorMessage] = useState('')
-  const [coordSource, setCoordSource] = useState(/** @type {'browser' | 'fallback' | null} */ (null))
-  const [geocodedPlace, setGeocodedPlace] = useState(/** @type {string | null} */ (null))
+  const { forecast } = useDashboardLive()
+  const { status, days, snapshot, errorMessage, coordSource, geocodedPlace } = forecast
 
   const locationSubtitle = useMemo(
     () => (status === 'ready' ? getLocationSubtitle(geocodedPlace, coordSource) : null),
@@ -40,45 +34,6 @@ export function ForecastRow() {
     const lo = days[0]?.lowF
     return typeof lo === 'number' && Number.isFinite(lo) ? lo : null
   }, [status, days])
-
-  useEffect(() => {
-    let cancelled = false
-
-    async function load() {
-      setStatus('loading')
-      setErrorMessage('')
-      setCoordSource(null)
-      setGeocodedPlace(null)
-      try {
-        const { latitude, longitude, source } = await resolveAppLocation()
-        const [{ days: nextDays, snapshot: snap }, place] = await Promise.all([
-          fetchOpenMeteoForecast(latitude, longitude),
-          reverseGeocodePlaceLabel(latitude, longitude),
-        ])
-        if (!cancelled) {
-          setDays(nextDays)
-          setSnapshot(snap)
-          setCoordSource(source)
-          setGeocodedPlace(place)
-          setStatus('ready')
-        }
-      } catch (e) {
-        if (!cancelled) {
-          setErrorMessage(e instanceof Error ? e.message : 'Forecast unavailable')
-          setDays([])
-          setSnapshot(null)
-          setCoordSource(null)
-          setGeocodedPlace(null)
-          setStatus('error')
-        }
-      }
-    }
-
-    load()
-    return () => {
-      cancelled = true
-    }
-  }, [])
 
   return (
     <>

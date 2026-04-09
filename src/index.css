@@ -974,31 +974,31 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
     inset 0 1px 0 rgba(255, 255, 255, 0.055), inset 0 -1px 0 rgba(46, 230, 166, 0.08);
 }
 
-/* Today’s weather only — Observatory-style shell (blue night glass); Forecast row stays green */
+/* Today’s weather only — neutral charcoal shell (no blue wash); inner data colors unchanged */
 .hq-card--forecast.hq-card--today-wx {
-  background: linear-gradient(152deg, #141c28 0%, #0e141f 45%, #0a1018 100%);
-  border-color: rgba(165, 216, 255, 0.2);
-  box-shadow: var(--hq-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    inset 0 -1px 0 rgba(165, 216, 255, 0.08);
+  background: linear-gradient(152deg, #18191c 0%, #121315 45%, #0d0e10 100%);
+  border-color: rgba(255, 255, 255, 0.085);
+  box-shadow: var(--hq-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.045),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.35);
 }
 
 .hq-card--forecast.hq-card--today-wx:hover {
-  border-color: rgba(165, 216, 255, 0.32);
-  box-shadow: var(--hq-shadow), 0 0 0 1px rgba(147, 197, 255, 0.12), 0 0 40px rgba(147, 197, 255, 0.07),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -1px 0 rgba(165, 216, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.13);
+  box-shadow: var(--hq-shadow), 0 0 0 1px rgba(255, 255, 255, 0.06), 0 0 36px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
 
 .hq-card--forecast.hq-card--today-wx .hq-card__title {
-  color: rgba(200, 218, 240, 0.92);
+  color: rgba(226, 230, 236, 0.94);
 }
 
 .hq-card--forecast.hq-card--today-wx .hq-card__icon {
-  color: #8ec5ff;
-  filter: drop-shadow(0 0 10px rgba(147, 197, 255, 0.35));
+  color: rgba(200, 206, 216, 0.95);
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.12));
 }
 
 .hq-card--forecast.hq-card--today-wx .hq-card__body {
-  color: #c9d4e0;
+  color: #c8ccd4;
 }
 
 .hq-card--forecast .hq-card__head {

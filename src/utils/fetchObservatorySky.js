@@ -5,32 +5,15 @@ import { fetchOpenMeteoObservatorySnapshot } from './fetchOpenMeteoObservatory'
 import { computeMoonStateFromSunCalc } from './moonSunCalc'
 
 /**
- * Live observatory row: Open-Meteo (clouds, visibility, humidity) + SunCalc (moon).
- * Location matches Forecast / Solar Arc (browser GPS or Virginia Beach fallback).
+ * Merge Open-Meteo observatory snapshot + SunCalc moon + place line (no I/O).
  *
- * @returns {Promise<{
- *   locationLabel: string,
- *   phaseName: string,
- *   illumination: number,
- *   ageDays: number,
- *   moonriseLabel: string | null,
- *   moonsetLabel: string | null,
- *   cloudCoverPct: number | null,
- *   visibilityLabel: string | null,
- *   relativeHumidityPct: number | null,
- * }>}
+ * @param {Awaited<ReturnType<typeof fetchOpenMeteoObservatorySnapshot>>} wx
+ * @param {ReturnType<typeof computeMoonStateFromSunCalc>} moon
+ * @param {string | null} place
+ * @param {'browser' | 'fallback'} source
  */
-export async function fetchObservatorySkyData() {
-  const { latitude, longitude, source } = await resolveAppLocation()
-
-  const [wx, place] = await Promise.all([
-    fetchOpenMeteoObservatorySnapshot(latitude, longitude),
-    reverseGeocodePlaceLabel(latitude, longitude),
-  ])
-
-  const moon = computeMoonStateFromSunCalc(latitude, longitude, new Date())
+export function assembleObservatorySkyRecord(wx, moon, place, source) {
   const locationLabel = getLocationSubtitle(place, source) ?? '—'
-
   return {
     locationLabel,
     phaseName: moon.phaseName,
@@ -42,4 +25,22 @@ export async function fetchObservatorySkyData() {
     visibilityLabel: wx.visibilityLabel,
     relativeHumidityPct: wx.relativeHumidityPct,
   }
+}
+
+/**
+ * Live observatory row: Open-Meteo (clouds, visibility, humidity) + SunCalc (moon).
+ * Location matches Forecast / Solar Arc (browser GPS or Virginia Beach fallback).
+ *
+ * @returns {Promise<ReturnType<typeof assembleObservatorySkyRecord>>}
+ */
+export async function fetchObservatorySkyData() {
+  const { latitude, longitude, source } = await resolveAppLocation()
+
+  const [wx, place] = await Promise.all([
+    fetchOpenMeteoObservatorySnapshot(latitude, longitude),
+    reverseGeocodePlaceLabel(latitude, longitude),
+  ])
+
+  const moon = computeMoonStateFromSunCalc(latitude, longitude, new Date())
+  return assembleObservatorySkyRecord(wx, moon, place, source)
 }

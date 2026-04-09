@@ -5,23 +5,26 @@ import { SunTimesPanel } from './components/SunTimesPanel'
 import { MarketWatchPanel } from './components/MarketWatchPanel'
 import { SportsTickerPanel } from './components/SportsTickerPanel'
 import { SkyConditionsPanel } from './components/SkyConditionsPanel'
+import { DashboardLiveProvider } from './context/DashboardLiveProvider'
 
 function App() {
   return (
-    <div className="hq-app">
-      <div className="hq-scanlines" aria-hidden />
-      <DashboardHeader />
-      <main className="hq-main">
-        <div className="hq-grid">
-          <ForecastRow />
-          <SkyConditionsPanel />
-          <SunTimesPanel />
-          <MarketWatchPanel />
-          <SystemStatusPanel />
-          <SportsTickerPanel />
-        </div>
-      </main>
-    </div>
+    <DashboardLiveProvider>
+      <div className="hq-app">
+        <div className="hq-scanlines" aria-hidden />
+        <DashboardHeader />
+        <main className="hq-main">
+          <div className="hq-grid">
+            <ForecastRow />
+            <SkyConditionsPanel />
+            <SunTimesPanel />
+            <MarketWatchPanel />
+            <SystemStatusPanel />
+            <SportsTickerPanel />
+          </div>
+        </main>
+      </div>
+    </DashboardLiveProvider>
   )
 }
 
