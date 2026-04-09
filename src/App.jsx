@@ -25,7 +25,7 @@ function App() {
           </div>
         </main>
       </div>
-      {import.meta.env.DEV ? <LiveDataRefreshDebug /> : null}
+      <LiveDataRefreshDebug />
     </DashboardLiveProvider>
   )
 }

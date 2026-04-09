@@ -2532,7 +2532,7 @@ header.hq-header > .hq-header__inner > h1.hq-header__title > span.hq-header__bak
   border-radius: 0 var(--hq-radius-sm) var(--hq-radius-sm) 0;
 }
 
-/* DEV-only: LiveDataRefreshDebug (stripped in production by component guard) */
+/* Temporary: LiveDataRefreshDebug (remove with component) */
 .hq-refresh-debug {
   position: fixed;
   z-index: 9999;

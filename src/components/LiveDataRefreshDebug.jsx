@@ -3,14 +3,14 @@ import { useDashboardLive } from '../hooks/useDashboardLive'
 function fmt(ts) {
   if (ts == null) return '—'
   return new Date(ts).toLocaleTimeString(undefined, {
-    hour: '2-digit',
+    hour: 'numeric',
     minute: '2-digit',
     second: '2-digit',
-    hour12: false,
+    hour12: true,
   })
 }
 
-/** Mount only when `import.meta.env.DEV` (see App.jsx). */
+/** Temporary: refresh timestamps for testing auto-refresh; remove before ship. */
 export function LiveDataRefreshDebug() {
   const { liveRefreshAt } = useDashboardLive()
 
@@ -18,7 +18,7 @@ export function LiveDataRefreshDebug() {
     <div
       className="hq-refresh-debug"
       aria-hidden
-      title="DEV: last successful refresh (local time)"
+      title="Last successful refresh (local 12h time) — temporary debug"
     >
       <span className="hq-refresh-debug__label">live</span>
       <span className="hq-refresh-debug__row">
