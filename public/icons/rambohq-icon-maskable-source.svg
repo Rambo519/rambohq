@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" role="img" aria-label="RamboHQ">
+  <defs>
+    <linearGradient id="rambo-bg-m" x1="48" y1="32" x2="464" y2="480" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#14151a"/>
+      <stop offset="1" stop-color="#060608"/>
+    </linearGradient>
+    <linearGradient id="rambo-teal-m" x1="128" y1="128" x2="384" y2="384" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6af0c8"/>
+      <stop offset="1" stop-color="#2ee6a6"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#rambo-bg-m)"/>
+  <g transform="translate(256 256) scale(0.68) translate(-256 -256)">
+    <rect x="26" y="26" width="460" height="460" rx="92" stroke="#2ee6a6" stroke-opacity="0.32" stroke-width="5"/>
+    <path fill="url(#rambo-teal-m)" d="M132 158h70c40 0 66 26 66 62 0 30-19 50-46 56l54 90h-54l-50-86h-40v86h-50V158zm46 46v50h24c20 0 32-12 32-26s-12-26-32-26h-24z"/>
+    <path fill="url(#rambo-teal-m)" d="M286 158h46v92h50v-92h46v196h-46v-84h-50v84h-46V158z"/>
+    <circle cx="406" cy="106" r="13" fill="#a5d8ff" fill-opacity="0.92"/>
+  </g>
+</svg>
